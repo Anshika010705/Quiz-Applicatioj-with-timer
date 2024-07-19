@@ -1,1 +1,67 @@
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
+public class QuizApp {
+
+    static int score = 0;
+    static int questionNumber = 0;
+    static Timer timer;
+
+    public static void main(String[] args) {
+        String[][] questions = {
+                {"What is the capital of France?", "Paris"},
+                {"What is the largest planet in our solar system?", "Jupiter"},
+                {"Who painted the Mona Lisa?", "Leonardo da Vinci"}
+        };
+
+        startQuiz(questions);
+    }
+
+    static void startQuiz(String[][] questions) {
+        Scanner scanner = new Scanner(System.in);
+
+        for (questionNumber = 0; questionNumber < questions.length; questionNumber++) {
+            System.out.println("Question " + (questionNumber + 1) + ": " + questions[questionNumber][0]);
+            startTimer(10); // Start a 10-second timer
+            String answer = scanner.nextLine();
+            stopTimer();
+
+            if (answer.equalsIgnoreCase(questions[questionNumber][1])) {
+                score++;
+                System.out.println("Correct!");
+            } else {
+                System.out.println("Incorrect! The answer was: " + questions[questionNumber][1]);
+            }
+            System.out.println();
+        }
+
+        System.out.println("Quiz finished! Your final score is " + score + " out of " + questions.length);
+        scanner.close();
+    }
+
+    static void startTimer(int seconds) {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("Time's up!");
+                nextQuestion();
+            }
+        }, seconds * 1000);
+    }
+
+    static void stopTimer() {
+        timer.cancel();
+    }
+
+    static void nextQuestion() {
+        questionNumber++;
+        if (questionNumber < 3) {
+            startQuiz(new String[0][0]); // Continue the quiz
+        } else {
+            System.out.println("Quiz finished!");
+            System.exit(0);
+        }
+    }
+}
